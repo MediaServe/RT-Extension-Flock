@@ -104,7 +104,7 @@ sub Notify {
 		$RT::Logger->error('Failed to push notification to Flock: no "message" object specified in payload');
 	};
 
-	my $data = JSON::encode_json($payload->{message});
+	my $data = JSON::encode_json($payload->message);
 
 	# Get the webhook address object from the payload
 
@@ -115,14 +115,14 @@ sub Notify {
 
 	# Create the webhook
 
-	my $request = HTTP::Request->new('POST', $payload->{address});
+	my $request = HTTP::Request->new('POST', $payload->address);
 	$request->header('Content-Type' => 'application/json');
 	$request->content($data);
 
 	my $ua = LWP::UserAgent->new();
 	$ua->timeout(10);
 
-	RT::Logger->info('Pushing webhook notification to Flock: '.$data.' on address: '.$payload->{address});
+	RT::Logger->info('Pushing webhook notification to Flock: '.$data.' on address: '.$payload->address);
 	my $response = $ua->request($request);
 
 	if ($response->is_success) {
