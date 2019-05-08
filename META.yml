@@ -1,7 +1,7 @@
 ---
-abstract: 'RT-Extension-Flock Extension'
+abstract: 'Send webhook notifications to Flock on various RT events'
 author:
-  - 'Andrew Wippler <andrew.wippler@gmail.com>'
+  - 'Thomas Lobker <thomas@mediaserve.nl>'
 build_requires:
   ExtUtils::MakeMaker: 6.59
 configure_requires:
@@ -21,8 +21,8 @@ requires:
   perl: 5.8.3
 resources:
   license: http://opensource.org/licenses/mit-license.php
-  repository: https://github.com/andrewwippler/RT-Extension-Flock
-version: '0.01'
-x_module_install_rtx_version: '0.37'
-x_requires_rt: 4.0.0
-x_rt_too_new: 4.4.2
+  repository: https://github.com/MediaServe/RT-Extension-Flock
+version: '1.00'
+x_module_install_rtx_version: '0.40'
+x_requires_rt: 4.4.0
+x_rt_too_new: 4.4.4

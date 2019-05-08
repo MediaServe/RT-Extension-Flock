@@ -1,15 +1,19 @@
 # RT-Extension-Flock
-Integration with Flock webhooks
+Send webhook notifications to Flock on various RT events
 
-# DESCRIPTION
-This module is designed for *Request Tracker 4* integrating with *Flock* webhooks. It was modified from Maciek's original code which was posted on RT's mailing list. His original code is [found here](http://www.gossamer-threads.com/lists/rt/users/128413#128413)
+## Introduction
+This module is designed for *Request Tracker 4* integrating with *Flock* webhooks. This is a modified version of the Slack extension [found here](https://github.com/andrewwippler/RT-Extension-Slack).
 
-The module works with the *Mattermost* server as well.
+### Request Tracker
+Tested with and designed for RT version 4.4.2 that is shipped with Ubuntu 18.04 LTS.
 
-# RT VERSION
-Works with RT 4.2.0 and newer
+## Installation
 
-# INSTALLATION
+### Requirements
+    apt install request-tracker4 rt4-apache2 rt4-clients rt4-db-postgresql
+    apt install make build-essential libmodule-install-perl
+
+### Build the extension
     perl Makefile.PL
     make
     make install
