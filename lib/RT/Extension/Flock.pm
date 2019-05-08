@@ -5,19 +5,21 @@ use LWP::UserAgent;
 use JSON; 
 package RT::Extension::Flock;
 
-our $VERSION = '0.01';
+our $VERSION = '1.00';
 
 =head1 NAME
 
-RT-Extension-Flock - Integration with Flock webhooks
+RT-Extension-Flock - Send webhook notifications to Flock on various RT events
 
 =head1 DESCRIPTION
 
-This module is designed for *Request Tracker 4* integrating with *Flock* webhooks. It was modified from Maciek's original code which was posted on RT's mailing list. His original code is [found here](http://www.gossamer-threads.com/lists/rt/users/128413#128413)
+This extension will make you able to send notifications to your Flock environment
+using webhooks. It is using a JSON object for configuration that you can set in
+real-time on triggering the extension.
 
 =head1 RT VERSION
 
-Works with RT 4.2.0
+Works with RT 4.4.2
 
 =head1 INSTALLATION
 
@@ -31,45 +33,39 @@ Works with RT 4.2.0
 
 May need root permissions
 
-=item Edit your F</opt/rt4/etc/RT_SiteConfig.pm>
+=item Edit F</etc/request-tracker4/RT_SiteConfig.pm>
 
-If you are using RT 4.2 or greater, add this line:
+Install the extension by adding the folllowing line:
 
     Plugin('RT::Extension::Flock');
 
-For RT 4.0, add this line:
-
-    Set(@Plugins, qw(RT::Extension::Flock));
-
-or add C<RT::Extension::Flock> to your existing C<@Plugins> line.
-
 =item Clear your mason cache
 
-    rm -rf /opt/rt4/var/mason_data/obj
+    rm /var/cache/request-tracker4/mason_data/obj -fr
+    mkdir /var/cache/request-tracker4/mason_data/obj
+    chown www-data /var/cache/request-tracker4/mason_data/obj/
 
 =item Restart your webserver
+
+    service apache2 restart
 
 =back
 
 =head1 AUTHOR
 
-Andrew Wippler E<lt>andrew.wippler@gmail.comE<gt>
+MediaServe International, Thomas Lobker E<lt>thomas@mediaserve.nlE<gt>
 
 =head1 BUGS
 
-All bugs should be reported via email to
+All bugs should be reported on Github:
 
-    L<bug-RT-Extension-Flock@rt.cpan.org|mailto:bug-RT-Extension-Flock@rt.cpan.org>
-
-or via the web at
-
-    L<rt.cpan.org|http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-Flock>.
+    L<github.com/MediaServe/RT-Extension-Flock/issues|https://github.com/MediaServe/RT-Extension-Flock/issues>
 
 =head1 LICENSE AND COPYRIGHT
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Andrew Wippler
+Copyright (c) 2019 MediaServe International
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -89,44 +85,51 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-
-
 =cut
-sub Notify { 
-	my %args = @_; 
-	my $payload = { 
-		username => 'Mr. RT', 
-		channel	=>	'#request-tracker',
-		icon_emoji => ':ghost:', 
-		text => 'I have forgotten to say something', 
-	}; 
-	my $service_webhook; 
 
+sub Notify {
+	my %args = @_;
+	my $payload;
 
-	foreach (keys %args) { 
-		$payload->{$_} = $args{$_}; 
-	} 
-	if (!$payload->{text}) { 
-		return; 
-	} 
-	my $payload_json = JSON::encode_json($payload); 
+	# Assign arguments to the payload
 
-	$service_webhook = RT->Config->Get('FlockWebhookURL'); 
-	if (!$service_webhook) { 
-		return; 
-	} 
+	foreach (keys %args) {
+		$payload->{$_} = $args{$_};
+	};
 
-	my $ua = LWP::UserAgent->new(); 
-	$ua->timeout(10); 
+	# Get the message object from the payload
 
-	$RT::Logger->info('Pushing notification to Flock: '. $payload_json); 
-	my $response = $ua->post($service_webhook,[ 'payload' => $payload_json ]);
-	if ($response->is_success) { 
+	if (!$payload->{message}) {
 		return;
-	} else { 
-		$RT::Logger->error('Failed to push notification to Flock ('. 
-		$response->code .': '. $response->message .')'); 
-	} 
-} 
+		$RT::Logger->error('Failed to push notification to Flock: no "message" object specified in payload');
+	};
 
-1; 
+	my $data = JSON::encode_json($payload->{message});
+
+	# Get the webhook address object from the payload
+
+	if (!$payload->{address}) {
+		return;
+		$RT::Logger->error('Failed to push notification to Flock: no "address" object specified in payload');
+	};
+
+	# Create the webhook
+
+	my $request = HTTP::Request->new('POST', $payload->{address});
+	$request->header('Content-Type' => 'application/json');
+	$request->content($data);
+
+	my $ua = LWP::UserAgent->new();
+	$ua->timeout(10);
+
+	RT::Logger->info('Pushing webhook notification to Flock: '.$data.' on address: '.$payload->{address});
+	my $response = $ua->request($request);
+
+	if ($response->is_success) {
+		return;
+	} else {
+		$RT::Logger->error('Failed to push webhook notification ('.$response->code.': '.$response->message.')');
+	};
+};
+
+1;
