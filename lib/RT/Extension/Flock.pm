@@ -3,17 +3,17 @@ use warnings;
 use HTTP::Request::Common qw(POST); 
 use LWP::UserAgent; 
 use JSON; 
-package RT::Extension::Slack;
+package RT::Extension::Flock;
 
 our $VERSION = '0.01';
 
 =head1 NAME
 
-RT-Extension-Slack - Integration with Slack webhooks
+RT-Extension-Flock - Integration with Flock webhooks
 
 =head1 DESCRIPTION
 
-This module is designed for *Request Tracker 4* integrating with *Slack* webhooks. It was modified from Maciek's original code which was posted on RT's mailing list. His original code is [found here](http://www.gossamer-threads.com/lists/rt/users/128413#128413)
+This module is designed for *Request Tracker 4* integrating with *Flock* webhooks. It was modified from Maciek's original code which was posted on RT's mailing list. His original code is [found here](http://www.gossamer-threads.com/lists/rt/users/128413#128413)
 
 =head1 RT VERSION
 
@@ -35,13 +35,13 @@ May need root permissions
 
 If you are using RT 4.2 or greater, add this line:
 
-    Plugin('RT::Extension::Slack');
+    Plugin('RT::Extension::Flock');
 
 For RT 4.0, add this line:
 
-    Set(@Plugins, qw(RT::Extension::Slack));
+    Set(@Plugins, qw(RT::Extension::Flock));
 
-or add C<RT::Extension::Slack> to your existing C<@Plugins> line.
+or add C<RT::Extension::Flock> to your existing C<@Plugins> line.
 
 =item Clear your mason cache
 
@@ -59,11 +59,11 @@ Andrew Wippler E<lt>andrew.wippler@gmail.comE<gt>
 
 All bugs should be reported via email to
 
-    L<bug-RT-Extension-Slack@rt.cpan.org|mailto:bug-RT-Extension-Slack@rt.cpan.org>
+    L<bug-RT-Extension-Flock@rt.cpan.org|mailto:bug-RT-Extension-Flock@rt.cpan.org>
 
 or via the web at
 
-    L<rt.cpan.org|http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-Slack>.
+    L<rt.cpan.org|http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-Flock>.
 
 =head1 LICENSE AND COPYRIGHT
 
@@ -111,7 +111,7 @@ sub Notify {
 	} 
 	my $payload_json = JSON::encode_json($payload); 
 
-	$service_webhook = RT->Config->Get('SlackWebhookURL'); 
+	$service_webhook = RT->Config->Get('FlockWebhookURL'); 
 	if (!$service_webhook) { 
 		return; 
 	} 
@@ -119,12 +119,12 @@ sub Notify {
 	my $ua = LWP::UserAgent->new(); 
 	$ua->timeout(10); 
 
-	$RT::Logger->info('Pushing notification to Slack: '. $payload_json); 
+	$RT::Logger->info('Pushing notification to Flock: '. $payload_json); 
 	my $response = $ua->post($service_webhook,[ 'payload' => $payload_json ]);
 	if ($response->is_success) { 
 		return;
 	} else { 
-		$RT::Logger->error('Failed to push notification to Slack ('. 
+		$RT::Logger->error('Failed to push notification to Flock ('. 
 		$response->code .': '. $response->message .')'); 
 	} 
 } 

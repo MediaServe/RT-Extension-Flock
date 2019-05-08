@@ -1,8 +1,8 @@
-# RT-Extension-Slack
-Integration with Slack webhooks
+# RT-Extension-Flock
+Integration with Flock webhooks
 
 # DESCRIPTION
-This module is designed for *Request Tracker 4* integrating with *Slack* webhooks. It was modified from Maciek's original code which was posted on RT's mailing list. His original code is [found here](http://www.gossamer-threads.com/lists/rt/users/128413#128413)
+This module is designed for *Request Tracker 4* integrating with *Flock* webhooks. It was modified from Maciek's original code which was posted on RT's mailing list. His original code is [found here](http://www.gossamer-threads.com/lists/rt/users/128413#128413)
 
 The module works with the *Mattermost* server as well.
 
@@ -19,11 +19,11 @@ May need root permissions
 Edit your /opt/rt4/etc/RT_SiteConfig.pm
 If you are using RT 4.2 or greater, add this line:
 
-	Plugin('RT::Extension::Slack');
+	Plugin('RT::Extension::Flock');
 
 For RT 4.0, add this line:
 
-	Set(@Plugins, qw(RT::Extension::Slack));
+	Set(@Plugins, qw(RT::Extension::Flock));
 
 Clear your mason cache
 		rm -rf /opt/rt4/var/mason_data/obj
@@ -32,7 +32,7 @@ Restart your webserver
 
 # CONFIGURATIONS
 Edit your /opt/rt4/etc/RT_SiteConfig.pm to include:
-    Set($SlackWebhookURL, "slack-hook-url");
+    Set($FlockWebhookURL, "flock-hook-url");
 
 # USAGE
 
@@ -59,13 +59,13 @@ my $url = join '',
 $requestor = $ticket->RequestorAddresses || 'unknown'; 
 $text = sprintf('New ticket <%s|#%d> by %s: %s', $url, $ticket->Id, $requestor, $ticket->Subject); 
 
-RT::Extension::Slack::Notify(text => $text); 
+RT::Extension::Flock::Notify(text => $text); 
 ```
 
-The call to ``RT::Extension::Slack::Notify`` takes further args to fill the payload.
+The call to ``RT::Extension::Flock::Notify`` takes further args to fill the payload.
 
 ```
-RT::Extension::Slack::Notify(text => $text, channel => "support-team", username => "Helpdesk"); 
+RT::Extension::Flock::Notify(text => $text, channel => "support-team", username => "Helpdesk"); 
 ```
 
 # AUTHORS

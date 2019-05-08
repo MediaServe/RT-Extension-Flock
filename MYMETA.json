@@ -1,5 +1,5 @@
 {
-   "abstract" : "RT-Extension-Slack Extension",
+   "abstract" : "RT-Extension-Flock Extension",
    "author" : [
       "Andrew Wippler <andrew.wippler@gmail.com>"
    ],
@@ -12,7 +12,7 @@
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
       "version" : "2"
    },
-   "name" : "RT-Extension-Slack",
+   "name" : "RT-Extension-Flock",
    "no_index" : {
       "directory" : [
          "t",

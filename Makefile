@@ -1,4 +1,4 @@
-# This Makefile is for the RT::Extension::Slack extension to perl.
+# This Makefile is for the RT::Extension::Flock extension to perl.
 #
 # It was generated automatically by MakeMaker version
 # 6.98 (Revision: 69800) from the contents of
@@ -11,25 +11,25 @@
 
 #   MakeMaker Parameters:
 
-#     ABSTRACT => q[RT-Extension-Slack Extension]
+#     ABSTRACT => q[RT-Extension-Flock Extension]
 #     AUTHOR => [q[Andrew Wippler <andrew.wippler@gmail.com>]]
 #     BUILD_REQUIRES => { ExtUtils::MakeMaker=>q[6.59] }
 #     CONFIGURE_REQUIRES => {  }
-#     DISTNAME => q[RT-Extension-Slack]
-#     INSTALLARCHLIB => q[/usr/local/share/request-tracker4/plugins/RT-Extension-Slack/lib]
+#     DISTNAME => q[RT-Extension-Flock]
+#     INSTALLARCHLIB => q[/usr/local/share/request-tracker4/plugins/RT-Extension-Flock/lib]
 #     INSTALLSITEARCH => q[/usr/local/share/request-tracker4/man]
-#     INSTALLSITELIB => q[/usr/local/share/request-tracker4/plugins/RT-Extension-Slack/lib]
+#     INSTALLSITELIB => q[/usr/local/share/request-tracker4/plugins/RT-Extension-Flock/lib]
 #     INSTALLSITEMAN1DIR => q[/usr/local/share/request-tracker4/man/man1]
 #     INSTALLSITEMAN3DIR => q[/usr/local/share/request-tracker4/man/man3]
 #     LICENSE => q[mit]
 #     MIN_PERL_VERSION => q[5.008003]
-#     NAME => q[RT::Extension::Slack]
+#     NAME => q[RT::Extension::Flock]
 #     NO_META => q[1]
 #     PREREQ_PM => { ExtUtils::MakeMaker=>q[6.59] }
 #     SIGN => q[1]
 #     TEST_REQUIRES => {  }
 #     VERSION => q[0.01]
-#     VERSION_FROM => q[lib/RT/Extension/Slack.pm]
+#     VERSION_FROM => q[lib/RT/Extension/Flock.pm]
 #     dist => { PREOP=>q[$(PERL) -I. "-MModule::Install::Admin" -e "dist_preop(q($(DISTVNAME)))"] }
 #     realclean => { FILES=>q[MYMETA.yml] }
 
@@ -68,8 +68,8 @@ VENDORLIBEXP = /usr/share/perl5
 AR_STATIC_ARGS = cr
 DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
-NAME = RT::Extension::Slack
-NAME_SYM = RT_Extension_Slack
+NAME = RT::Extension::Flock
+NAME_SYM = RT_Extension_Flock
 VERSION = 0.01
 VERSION_MACRO = VERSION
 VERSION_SYM = 0_01
@@ -93,11 +93,11 @@ SITEPREFIX = $(PREFIX)/local
 VENDORPREFIX = $(PREFIX)
 INSTALLPRIVLIB = $(PERLPREFIX)/share/perl/5.20
 DESTINSTALLPRIVLIB = $(DESTDIR)$(INSTALLPRIVLIB)
-INSTALLSITELIB = /usr/local/share/request-tracker4/plugins/RT-Extension-Slack/lib
+INSTALLSITELIB = /usr/local/share/request-tracker4/plugins/RT-Extension-Flock/lib
 DESTINSTALLSITELIB = $(DESTDIR)$(INSTALLSITELIB)
 INSTALLVENDORLIB = $(VENDORPREFIX)/share/perl5
 DESTINSTALLVENDORLIB = $(DESTDIR)$(INSTALLVENDORLIB)
-INSTALLARCHLIB = /usr/local/share/request-tracker4/plugins/RT-Extension-Slack/lib
+INSTALLARCHLIB = /usr/local/share/request-tracker4/plugins/RT-Extension-Flock/lib
 DESTINSTALLARCHLIB = $(DESTDIR)$(INSTALLARCHLIB)
 INSTALLSITEARCH = /usr/local/share/request-tracker4/man
 DESTINSTALLSITEARCH = $(DESTDIR)$(INSTALLSITEARCH)
@@ -158,11 +158,11 @@ MM_REVISION = 69800
 # PARENT_NAME = NAME without BASEEXT and no trailing :: (eg Foo::Bar)
 # DLBASE  = Basename part of dynamic library. May be just equal BASEEXT.
 MAKE = make
-FULLEXT = RT/Extension/Slack
-BASEEXT = Slack
+FULLEXT = RT/Extension/Flock
+BASEEXT = Flock
 PARENT_NAME = RT::Extension
 DLBASE = $(BASEEXT)
-VERSION_FROM = lib/RT/Extension/Slack.pm
+VERSION_FROM = lib/RT/Extension/Flock.pm
 OBJECT = 
 LDFROM = $(OBJECT)
 LINKTYPE = dynamic
@@ -174,7 +174,7 @@ C_FILES  =
 O_FILES  = 
 H_FILES  = 
 MAN1PODS = 
-MAN3PODS = lib/RT/Extension/Slack.pm
+MAN3PODS = lib/RT/Extension/Flock.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIB)$(DFSEP)Config.pm $(PERL_INC)$(DFSEP)config.h
@@ -196,10 +196,10 @@ PERL_ARCHIVE       =
 PERL_ARCHIVE_AFTER = 
 
 
-TO_INST_PM = lib/RT/Extension/Slack.pm
+TO_INST_PM = lib/RT/Extension/Flock.pm
 
-PM_TO_BLIB = lib/RT/Extension/Slack.pm \
-	blib/lib/RT/Extension/Slack.pm
+PM_TO_BLIB = lib/RT/Extension/Flock.pm \
+	blib/lib/RT/Extension/Flock.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -268,8 +268,8 @@ CI = ci -u
 RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
-DISTNAME = RT-Extension-Slack
-DISTVNAME = RT-Extension-Slack-0.01
+DISTNAME = RT-Extension-Flock
+DISTVNAME = RT-Extension-Flock-0.01
 
 
 # --- MakeMaker macro section:
@@ -423,9 +423,9 @@ POD2MAN = $(POD2MAN_EXE)
 
 
 manifypods : pure_all  \
-	lib/RT/Extension/Slack.pm
+	lib/RT/Extension/Flock.pm
 	$(NOECHO) $(POD2MAN) --section=$(MAN3EXT) --perm_rw=$(PERM_RW) \
-	  lib/RT/Extension/Slack.pm $(INST_MAN3DIR)/RT::Extension::Slack.$(MAN3EXT) 
+	  lib/RT/Extension/Flock.pm $(INST_MAN3DIR)/RT::Extension::Flock.$(MAN3EXT) 
 
 
 
@@ -767,7 +767,7 @@ testdb_static :: testdb_dynamic
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
 	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="$(VERSION)">' > $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '    <ABSTRACT>RT-Extension-Slack Extension</ABSTRACT>' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '    <ABSTRACT>RT-Extension-Flock Extension</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Andrew Wippler &lt;andrew.wippler@gmail.com&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <PERLCORE VERSION="5,008003,0,0" />' >> $(DISTNAME).ppd
@@ -781,7 +781,7 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  lib/RT/Extension/Slack.pm blib/lib/RT/Extension/Slack.pm 
+	  lib/RT/Extension/Flock.pm blib/lib/RT/Extension/Flock.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 
@@ -814,5 +814,5 @@ distsign ::
 
 install ::
 	$(NOECHO) $(PERL) -Ilib -I"/usr/local/share/request-tracker4/lib" -I"/usr/share/request-tracker4/lib" -Iinc -MModule::Install::RTx::Runtime -e"RTxPlugin()"
-	$(NOECHO) $(PERL) -MExtUtils::Install -e "install({q(lib), q(/usr/local/share/request-tracker4/plugins/RT-Extension-Slack/lib)})"
+	$(NOECHO) $(PERL) -MExtUtils::Install -e "install({q(lib), q(/usr/local/share/request-tracker4/plugins/RT-Extension-Flock/lib)})"
 
