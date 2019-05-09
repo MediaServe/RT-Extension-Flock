@@ -89,40 +89,54 @@ SOFTWARE.
 
 sub Notify {
 	my %args = @_;
-	my $payload;
 
-	# Assign arguments to the payload
+	# Get the webhook address object from the payload
 
-	foreach (keys %args) {
-		$payload->{$_} = $args{$_};
+	my $address = $args{"address"};
+
+	if (!$address) {
+		$RT::Logger->error('Failed to push notification to Flock: no "address" specified in arguments');
+		return;
 	};
 
 	# Get the message object from the payload
 
-	if (!$payload->{message}) {
+	if (!$args{"message"}) {
+		$RT::Logger->error('Failed to push notification to Flock: no "message" hash specified in arguments');
 		return;
-		$RT::Logger->error('Failed to push notification to Flock: no "message" object specified in payload');
 	};
 
-	my $data = JSON::encode_json($payload->message);
+	# Recurse through the message hash and convert all hashes
 
-	# Get the webhook address object from the payload
+	sub GetData {
+		my $keys = $_[0];
+		my $struct = {};
 
-	if (!$payload->{address}) {
-		return;
-		$RT::Logger->error('Failed to push notification to Flock: no "address" object specified in payload');
+		foreach my $key (keys %{ $keys }) {
+			my $value = $keys->{$key};
+			if (ref $value eq ref {}) {
+				$struct->{$key} = GetData($value);
+			} else {
+				$struct->{$key} = $value;
+			};
+		};
+
+		return($struct);
 	};
+
+	my $message = GetData($args{"message"});
+	my $data = JSON->new->utf8->encode($message);
 
 	# Create the webhook
 
-	my $request = HTTP::Request->new('POST', $payload->address);
+	my $request = HTTP::Request->new('POST', $address);
 	$request->header('Content-Type' => 'application/json');
 	$request->content($data);
 
 	my $ua = LWP::UserAgent->new();
 	$ua->timeout(10);
 
-	RT::Logger->info('Pushing webhook notification to Flock: '.$data.' on address: '.$payload->address);
+	RT::Logger->info('Pushing webhook notification to Flock: '.$data.' on address: '.$address);
 	my $response = $ua->request($request);
 
 	if ($response->is_success) {
