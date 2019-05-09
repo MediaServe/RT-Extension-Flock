@@ -18,69 +18,83 @@ Tested with and designed for RT version 4.4.2 that is shipped with Ubuntu 18.04 
     make
     make install
 
-May need root permissions
+You may need root permissions to do any of these steps
 
-Edit your /opt/rt4/etc/RT_SiteConfig.pm
-If you are using RT 4.2 or greater, add this line:
+Edit /etc/request-tracker4/RT_SiteConfig.pm
 
-	Plugin('RT::Extension::Flock');
+Install the extension by adding the folllowing line:
 
-For RT 4.0, add this line:
-
-	Set(@Plugins, qw(RT::Extension::Flock));
+    Plugin('RT::Extension::Flock');
 
 Clear your mason cache
-		rm -rf /opt/rt4/var/mason_data/obj
+
+    rm /var/cache/request-tracker4/mason_data/obj -fr
+    mkdir /var/cache/request-tracker4/mason_data/obj
+    chown www-data /var/cache/request-tracker4/mason_data/obj/
 
 Restart your webserver
 
-# CONFIGURATIONS
-Edit your /opt/rt4/etc/RT_SiteConfig.pm to include:
-    Set($FlockWebhookURL, "flock-hook-url");
+    service apache2 restart
 
-# USAGE
+## Configuration
 
-Basic scrip use. 
+This extension does not need any configuration.
 
-Action: User Defined
+## Usage
 
-Add this code to your scrip's "Custom action preparation code":
+1. Create a new Scrip
+1. Choose a description and condition, for example 'On Create' to send a notification on newly created tickets
+1. Action is 'User Defined'
+1. Template is 'Blank'
+1. Use the 'Customer action preparation code' to trigger Notify() in the extension
 
+You need to call `RT::Extension::Flock::Notify()` with exactly two arguments:
 
-```
-my $text; 
-my $requestor; 
-my $ticket = $self->TicketObj; 
-my $queue = $ticket->QueueObj; 
-my $url = join '', 
-	RT->Config->Get('WebPort') == 443 ? 'https' : 'http', 
-	'://', 
-	RT->Config->Get('WebDomain'), 
-	RT->Config->Get('WebPath'), 
-	'/Ticket/Display.html?id=', 
-	$ticket->Id; 
- 
-$requestor = $ticket->RequestorAddresses || 'unknown'; 
-$text = sprintf('New ticket <%s|#%d> by %s: %s', $url, $ticket->Id, $requestor, $ticket->Subject); 
+    message => {}
+    address => https://api.flock.com/hooks/sendMessage/<uuid>
 
-RT::Extension::Flock::Notify(text => $text); 
-```
+The message may contain multiple levels
 
-The call to ``RT::Extension::Flock::Notify`` takes further args to fill the payload.
+### Example code
 
 ```
-RT::Extension::Flock::Notify(text => $text, channel => "support-team", username => "Helpdesk"); 
+# Get the ticket properties
+my $ticket = $self->TicketObj;
+
+# Construct the direct display link to this ticket
+my $link = join RT->Config->Get('WebPort') == 443 ? 'https' : 'http','://',RT->Config->Get('WebDomain'),RT->Config->Get('WebPath'),'/Ticket/Display.html?id=',$ticket->Id;
+
+# Get the name of the queue
+my $queue = $ticket->QueueObj->Name;
+
+# Get the name of the requestor, or use our name if we created the ticket
+my $requestor = $ticket->RequestorAddresses || 'Request Tracker';
+
+# Construct a message object to send to the webhook
+my $message = {
+ requestor => $requestor,
+ subject => $ticket->Subject,
+ ticket => {
+  id => $ticket->Id,
+  queue => $queue
+ },
+ link => $link
+};
+
+# Send the notification message to our webhook
+RT::Extension::Flock::Notify(message => $message, address => 'https://api.flock.com/hooks/sendMessage/0260d544-1fa3-48c1-930e-00b9adaf81ac');
 ```
 
-# AUTHORS
-[Maciek] (http://www.gossamer-threads.com/lists/rt/users/128413#128413)  
-Andrew Wippler 
-    
+In Flock you can take arguments from the webhook and construct a nice message on one of your channels.
+
+```
+{"flockml":"New <strong>urgent</strong> incident [<strong>#$(json.ticket.id)</strong>] in queue [<strong>$(json.ticket.queue)</strong>] has been created<br/><a href=\"$(json.link)\">$(json.subject)</a>"}
+```
 
 # LICENSE AND COPYRIGHT
     The MIT License (MIT)
 
-    Copyright (c) 2015 Andrew Wippler
+    Copyright (c) 2019 MediaServe International
 
     Permission is hereby granted, free of charge, to any person obtaining a
     copy of this software and associated documentation files (the
@@ -100,4 +114,3 @@ Andrew Wippler
     CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
