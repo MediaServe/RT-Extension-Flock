@@ -1,11 +1,11 @@
 # RT-Extension-Flock
-Send webhook notifications to Flock on various RT events
+Send webhook notifications to Flock (and many others) on various events in Request Tracker
 
 ## Introduction
-This module is designed for *Request Tracker 4* integrating with *Flock* webhooks. This is a modified version of the Slack extension [found here](https://github.com/andrewwippler/RT-Extension-Slack).
+This extension is designed for the packaged installation of Request Tracker 4 in Ubuntu 18.04 LTS to send webhook notifications to Flock. This extension is an improved version of and inspired by the Slack extension [found here](https://github.com/andrewwippler/RT-Extension-Slack).
 
 ### Request Tracker
-Tested with and designed for RT version 4.4.2 that is shipped with Ubuntu 18.04 LTS.
+Tested with and designed for RT version 4.4.2 that is shipped with Ubuntu 18.04 LTS. It should work with any installation of Request Tracker 4.
 
 ## Installation
 
@@ -20,9 +20,7 @@ Tested with and designed for RT version 4.4.2 that is shipped with Ubuntu 18.04 
 
 You may need root permissions to do any of these steps
 
-Edit /etc/request-tracker4/RT_SiteConfig.pm
-
-Install the extension by adding the folllowing line:
+Edit `/etc/request-tracker4/RT_SiteConfig.pm` and install the extension by adding the folllowing line:
 
     Plugin('RT::Extension::Flock');
 
@@ -38,22 +36,22 @@ Restart your webserver
 
 ## Configuration
 
-This extension does not need any configuration.
+This extension does not need any configuration. The webhook address is taken from the scrip so you can use many webhooks at the same time. This will give you a lot of flexibility in using this extension.
 
 ## Usage
 
-1. Create a new Scrip
-1. Choose a description and condition, for example 'On Create' to send a notification on newly created tickets
-1. Action is 'User Defined'
-1. Template is 'Blank'
-1. Use the 'Customer action preparation code' to trigger Notify() in the extension
+1. Create a new `scrip`
+1. Choose a description and condition, for example `On Create` to send a notification on newly created tickets
+1. Action is `User Defined`
+1. Template is `Blank`
+1. Use the `Customer action preparation code` to trigger `Notify()` in the extension
 
 You need to call `RT::Extension::Flock::Notify()` with exactly two arguments:
 
-    message => {}
+    message => {},
     address => https://api.flock.com/hooks/sendMessage/<uuid>
 
-The message may contain multiple levels
+The `message` may contain multiple levels that will be converted to JSON before sending the webhook.
 
 ### Example code
 
@@ -91,26 +89,6 @@ In Flock you can take arguments from the webhook and construct a nice message on
 {"flockml":"New <strong>urgent</strong> incident [<strong>#$(json.ticket.id)</strong>] in queue [<strong>$(json.ticket.queue)</strong>] has been created<br/><a href=\"$(json.link)\">$(json.subject)</a>"}
 ```
 
-# LICENSE AND COPYRIGHT
-    The MIT License (MIT)
+In [Flock](https://flock.com/) you can create many webhooks, for different notifications (i.e. new ticket, ticket resolved) and different channels.
 
-    Copyright (c) 2019 MediaServe International
-
-    Permission is hereby granted, free of charge, to any person obtaining a
-    copy of this software and associated documentation files (the
-    "Software"), to deal in the Software without restriction, including
-    without limitation the rights to use, copy, modify, merge, publish,
-    distribute, sublicense, and/or sell copies of the Software, and to
-    permit persons to whom the Software is furnished to do so, subject to
-    the following conditions:
-
-    The above copyright notice and this permission notice shall be included
-    in all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+The webhook is plain JSON and will be sent with `application/json` Content-Type, therefore it should be compatible with many other webhooks, including Slack and Mattermost.
